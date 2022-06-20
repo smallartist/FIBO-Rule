@@ -1,0 +1,159 @@
+.dataManageRedact {
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	white-space: nowrap;
+}
+
+.MR_header {
+	display: flex;
+	justify-content: space-between;
+
+	padding:20px;
+	box-sizing: border-box;
+	border-bottom: 1px solid #ddd;
+	transition: all 0.2s; 
+}
+
+.MR_header>div:nth-of-type(1) {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 12%;
+	font-size: 18px;
+}
+
+.MR_input {
+	
+	
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	border-bottom: 1px solid #ddd;
+	transition: all 0.2s; 
+	
+	padding: 20px 0 20px 0;
+	font-size: 16px;
+}
+
+.MR_input input {
+	
+	
+	transition: all 0.2s; 
+	
+	height: 40px;
+}
+
+.MR_scope {
+	border-bottom: 1px solid #ddd;
+	transition: all 0.2s; 
+	padding: 20px 0 20px 0;
+	font-size: 16px;
+	/* display: flex; */
+}
+
+.MR_scope input {
+	height: 40px;
+	transition: all 0.2s; 
+}
+
+
+
+.MR_headerSmall {
+	padding:8px 20px 8px 20px;
+
+}
+.MR_inputSmall {
+	padding: 0;
+	font-size: 14px;
+	height: 0;
+	overflow: hidden;
+}
+
+.MR_inputSmall input {
+	height: 25px;
+	height: 0;
+	overflow: hidden;
+}
+
+.MR_scopeSmall input {
+	height: 25px;
+	height: 0;
+	overflow: hidden;
+}
+
+.MR_scopeSmall {
+	padding:0;
+	font-size: 14px;
+	height: 0;
+	overflow: hidden;
+}
+
+
+
+
+.MR_input>div {
+	width: 30%;
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	margin-left: 2%;
+}
+
+.MR_input>div>p {
+	width: 30%;
+}
+
+.MR_checkbox {
+	padding: 20px;
+	border-bottom: 1px solid #ddd;
+}
+
+.MR_scope>div {
+	display: flex;
+	align-items: center;
+	margin-left: 2%;
+}
+
+.MR_scope>div>p {
+	width: 7.6%;
+}
+
+.MR_derive {
+
+	margin: 0 40px 0 40px;
+
+}
+
+.MR_rule_home {
+	overflow: scroll;
+	overflow-x: hidden;
+	height: 350px;
+}
+
+.MR_rule_home::-webkit-scrollbar {
+	display: none;
+	/* Chrome Safari */
+}
+
+.MR_toolbar {
+	background-color: #F0F0F0;
+	height: 40px;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	font-weight: bold;
+	font-size: 18px;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	-khtml-user-select: none;
+	user-select: none;
+
+}
+
+.MR_toolbar>p:hover {
+	color: #fff;
+
+}

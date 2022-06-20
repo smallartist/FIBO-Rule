@@ -1,0 +1,124 @@
+	.cont_cont {
+		display: flex;
+		border-radius: 20px;
+		height: 85vh;
+	}
+
+	.cont_left {
+		width: 200px;
+		flex-shrink: 0;
+		background-color: #fff;
+		border-radius: 10px 0 0 10px;
+
+
+	}
+
+	.cont_list {
+		height: 70vh;
+		overflow: scroll;
+		scrollbar-width: none;
+		/* Firefox */
+		-ms-overflow-style: none;
+		/* IE 10+ */
+		overflow-x: hidden;
+		/* position: relative; */
+	}
+
+	.cont_list::-webkit-scrollbar {
+		display: none;
+		/* Chrome Safari */
+	}
+
+	.cont_left::-webkit-scrollbar-track {
+		-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+		border-radius: 10px;
+		background-color: #F5F5F5;
+	}
+
+	.cont_header {
+		margin-left: 20px;
+		margin-top: 20px;
+	}
+
+	.cont_header_title {
+		color: #444;
+		font-size: 18px;
+	}
+
+	.cont_header_subtitle {
+		color: #999;
+		font-size: 14px;
+		margin-top: 5px;
+	}
+
+	.cont_new_file {
+		align-items: center;
+		display: flex;
+		font-size: 16px;
+		border-top: 1px solid #ddd;
+		border-bottom: 1px solid #ddd;
+		padding: 10px 0 10px 15px;
+		box-sizing: border-box;
+		margin-top: 15px;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+		-khtml-user-select: none;
+		user-select: none;
+	}
+	.cont_new_file>div{
+		margin-left: 10px;
+	}
+	.file_select {
+		border: #409EFF 2px solid;
+		border-radius: 2px;
+		color: #409EFF;
+	}
+
+	.cont_right {
+		flex-grow: 1;
+		overflow: hidden;
+		background-color: #fafafa;
+		border-radius: 10px 10px 10px 10px;
+	}
+
+	.cont_right_hint {
+		font-size: 100px;
+		color: #00000011;
+		text-align: center;
+		line-height: 80vh;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+		-khtml-user-select: none;
+		user-select: none;
+	}
+
+	.cont_right_top {
+		padding: 21px;
+		box-sizing: border-box;
+		display: flex;
+		justify-content: space-between;
+		border-bottom: 2px solid #eee;
+	}
+	.contText{
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: block;
+	}
+	.contText:hover{
+		white-space:inherit !important
+	}
+	.fileHint{
+		position: fixed;
+		background-color: #fafafa;
+		padding: 5px;
+		
+	}
+	.fileHint>p{
+		border-bottom: 1px solid #000;
+	}
+	.fileHint>p:hover{
+		color: #409EFF;
+	}
