@@ -1,1 +1,0 @@
-export const iframeurl =  window.location.protocol+'//'+window.location.host;
