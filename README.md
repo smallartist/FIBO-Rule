@@ -14,6 +14,8 @@
                              
                              
    ![|](https://www.fibo.cn/standard/image/git_weixin.jpg)
+ 扫描二维码，添加WhatsApp。
+  ![|](https://www.fibo.cn/standard/image/whatsApp.jpg)
   
                                   
 ## FIBO Rule整体功能架构介绍
@@ -126,3 +128,15 @@ FIBO Rule决策引擎系统核心概念有：指标、规则、决策节点、�
 ### 5 决策引擎
 
 一个引擎，对外提供一套服务接口，使用方调用指定引擎来获取决策结果
+
+### 6 部署参考文档
+
+![|](https://www.fibo.cn/docs/)
+
+### 7 demo演示
+
+![|](http://ex.fibo.cn)
+
+
+
+
