@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fibo.ddp.common.dao.cignacmb.BusinessRuleLogMapper">
+
+    <resultMap type="com.fibo.ddp.common.model.cignacmb.BusinessRuleLog" id="BusinessRuleLogMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="batchNo" column="batch_no" jdbcType="VARCHAR"/>
+        <result property="ruleName" column="rule_name" jdbcType="VARCHAR"/>
+        <result property="ruleCode" column="rule_code" jdbcType="VARCHAR"/>
+        <result property="ruleType" column="rule_type" jdbcType="VARCHAR"/>
+        <result property="businessName" column="business_name" jdbcType="VARCHAR"/>
+        <result property="businessCode" column="business_code" jdbcType="VARCHAR"/>
+        <result property="businessChildName" column="business_child_name" jdbcType="VARCHAR"/>
+        <result property="businessChildCode" column="business_child_code" jdbcType="VARCHAR"/>
+        <result property="ruleDescription" column="rule_description" jdbcType="VARCHAR"/>
+        <result property="executeSwitch" column="execute_switch" jdbcType="INTEGER"/>
+        <result property="organId" column="organ_id" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="ruleResult" column="rule_result" jdbcType="VARCHAR"/>
+        <result property="validStartTime" column="valid_start_time" jdbcType="TIMESTAMP"/>
+        <result property="validEndTime" column="valid_end_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultType="com.fibo.ddp.common.model.cignacmb.response.RuleLogResponse">
+        select
+        count(rule_code) executeNum,
+        rule_code,
+        rule_name,
+        rule_type,
+        business_name,
+        business_code,
+        business_child_name,
+        business_child_code,
+        rule_description,
+        execute_switch,
+        valid_start_time,
+        valid_end_time,
+        organ_id
+        from t_business_rule_log
+        <where>
+            <if test="ruleCode != null and ruleCode != ''">
+                and rule_code like CONCAT('%',#{ruleCode},'%')
+            </if>
+            <if test="ruleName != null and ruleName != ''">
+                and rule_name like CONCAT('%',#{ruleName},'%')
+            </if>
+            <if test="ruleType != null and ruleType != ''">
+                and rule_type like CONCAT('%',#{ruleType},'%')
+            </if>
+            <if test="businessName != null and businessName != ''">
+                and business_name like CONCAT('%',#{businessName},'%')
+            </if>
+            <if test="businessChildName != null and businessChildName != ''">
+                and business_child_name like CONCAT('%',#{businessChildName},'%')
+            </if>
+            <if test="startTime != null and endTime != null">
+                and create_time between #{startTime} and #{endTime}
+            </if>
+            <if test="organId != null">
+                and organ_id = #{organId}
+            </if>
+        </where>
+        group by rule_code
+    </select>
+
+    <select id="queryByIds" resultType="com.fibo.ddp.common.model.cignacmb.response.EventLogDetailResponse">
+        select
+        rule_code,
+        rule_name,
+        rule_type,
+        rule_description,
+        execute_switch,
+        valid_start_time,
+        valid_end_time,
+        rule_result
+        from t_business_rule_log
+        where id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+</mapper>
+

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fibo.ddp.common.dao.enginex.personas.PersonasEngineResultDetailMapper">
+
+    <resultMap type="com.fibo.ddp.common.model.enginex.personas.vo.PersonasReport" id="PersonasEngineResultMap">
+        <result property="tagName" column="tag_name" jdbcType="VARCHAR"/>
+        <result property="tagVersionCode" column="tag_version_code" jdbcType="VARCHAR"/>
+        <result property="tagId" column="tag_id" jdbcType="INTEGER"/>
+        <result property="tagVersionId" column="tag_version_id" jdbcType="INTEGER"/>
+        <result property="tagValue" column="tag_value" jdbcType="VARCHAR"/>
+        <result property="hitCount" column="hit_count" jdbcType="INTEGER"/>
+    </resultMap>
+    <select id="selectReportList" resultMap="PersonasEngineResultMap" parameterType="com.fibo.ddp.common.model.enginex.personas.vo.PersonasReportParam">
+        select tag.tag_name,tagv.version_code,report.tag_id,report.tag_version_id,report.tag_value,report.hit_count
+        from
+        (select tag_id,tag_version_id,tag_value,count(1) as hit_count from t_personas_engine_result_detail
+        <where>
+            <if test="engineId != null and engineId != ''">
+                and engine_id = #{engineId}
+            </if>
+            <if test="engineVersionId != null and engineVersionId != ''">
+                and engine_version_id = #{engineVersionId}
+            </if>
+            <if test="batchNo != null and batchNo != ''">
+                and batch_no = #{batchNo}
+            </if>
+            <if test="queryStartTime != null and queryStartTime != ''">
+                and create_time &gt;= #{queryStartTime}
+            </if>
+            <if test="queryEndTime != null and queryEndTime != ''">
+                and create_time &lt;=  #{queryEndTime}
+            </if>
+        </where>
+        group by tag_id,tag_version_id,tag_value
+        ) report
+        join t_tag tag on report.tag_id = tag.id
+        join t_tag_version  tagv on report.tag_version_id = tagv.id
+
+    </select>
+
+
+</mapper>
+

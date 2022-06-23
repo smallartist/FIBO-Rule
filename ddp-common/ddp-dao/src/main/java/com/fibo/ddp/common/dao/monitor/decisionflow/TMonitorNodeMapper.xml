@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fibo.ddp.common.dao.monitor.decisionflow.TMonitorNodeMapper">
+    <select id="countNodeHit" resultType="com.fibo.ddp.common.model.monitor.decisionflow.TMonitorNodeDTO">
+	  select
+        DATE_FORMAT(t.create_time,"%Y-%m-%d") as callDate,
+	    engine_id,
+        engine_version_id,
+        organ_id,
+        node_name,
+        node_id,
+        node_type,
+        count(1) as total
+        from
+        t_monitor_node t
+        where datediff(now(),t.create_time)=0
+      GROUP BY
+        DATE_FORMAT(t.create_time,"%Y-%m-%d"),
+        engine_id,
+        engine_version_id,
+        organ_id,
+        node_name,
+        node_id,
+        node_type
+    </select>
+</mapper>

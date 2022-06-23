@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fibo.ddp.common.dao.approval.ApprovalMapper">
+
+    <resultMap type="com.fibo.ddp.common.model.approval.Approval" id="ApprovalMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="applyType" column="apply_type" jdbcType="VARCHAR"/>
+        <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
+        <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+        <result property="updateUserId" column="update_user_id" jdbcType="INTEGER"/>
+        <result property="updateUserName" column="update_user_name" jdbcType="VARCHAR"/>
+        <result property="organId" column="organ_id" jdbcType="INTEGER"/>
+        <result property="applyStatus" column="apply_status" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="approvalTime" column="approval_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="applyDetail" column="apply_detail" jdbcType="VARCHAR"/>
+        <result property="applyDesc" column="apply_desc" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="BaseField">
+        id, apply_type, create_user_id, create_user_name, update_user_id, update_user_name, organ_id, apply_status, status, approval_time, create_time, update_time, apply_detail, apply_desc
+    </sql>
+    <sql id="condition">
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="applyType != null and applyType != ''">
+                and apply_type = #{applyType}
+            </if>
+            <if test="createUserId != null">
+                and create_user_id = #{createUserId}
+            </if>
+            <if test="createUserName != null and createUserName != ''">
+                and create_user_name = #{createUserName}
+            </if>
+            <if test="updateUserId != null">
+                and update_user_id = #{updateUserId}
+            </if>
+            <if test="updateUserName != null and updateUserName != ''">
+                and update_user_name = #{updateUserName}
+            </if>
+            <if test="organId != null">
+                and organ_id = #{organId}
+            </if>
+            <if test="applyStatus != null">
+                and apply_status = #{applyStatus}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="approvalTime != null">
+                and approval_time = #{approvalTime}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="applyDetail != null and applyDetail != ''">
+                and apply_detail = #{applyDetail}
+            </if>
+            <if test="applyDesc != null and applyDesc != ''">
+                and apply_desc = #{applyDesc}
+            </if>
+        </where>
+    </sql>
+
+</mapper>
+

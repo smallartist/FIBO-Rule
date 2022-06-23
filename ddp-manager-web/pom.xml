@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ddp</artifactId>
+        <groupId>com.fibo.ddp</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>ddp-manager-web</artifactId>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <!-- 数据中心 -->
+        <dependency>
+            <groupId>com.fibo.ddp</groupId>
+            <artifactId>ddp-datax-realtime-field</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!-- 策略中心 -->
+        <dependency>
+            <groupId>com.fibo.ddp</groupId>
+            <artifactId>ddp-strategyx-guide-rule</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fibo.ddp</groupId>
+            <artifactId>ddp-strategyx-script-rule</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fibo.ddp</groupId>
+            <artifactId>ddp-strategyx-score-card</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fibo.ddp</groupId>
+            <artifactId>ddp-strategyx-list-library</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fibo.ddp</groupId>
+            <artifactId>ddp-strategyx-ai-model</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fibo.ddp</groupId>
+            <artifactId>ddp-strategyx-decision-table</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fibo.ddp</groupId>
+            <artifactId>ddp-strategyx-decision-tree</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fibo.ddp</groupId>
+            <artifactId>ddp-strategyx-collection-rule</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fibo.ddp</groupId>
+            <artifactId>ddp-strategyx-data-clean</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fibo.ddp</groupId>
+            <artifactId>ddp-strategyx-tag</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!-- 场景引擎 -->
+        <dependency>
+            <groupId>com.fibo.ddp</groupId>
+            <artifactId>ddp-enginex-risk-engine</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fibo.ddp</groupId>
+            <artifactId>ddp-enginex-dataflow-engine</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fibo.ddp</groupId>
+            <artifactId>ddp-enginex-personas-engine</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fibo.ddp</groupId>
+            <artifactId>ddp-enginex-marketing-engine</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!-- 权限系统 -->
+        <dependency>
+            <groupId>com.fibo.ddp</groupId>
+            <artifactId>ddp-authx</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!-- 监控中心 -->
+        <dependency>
+            <groupId>com.fibo.ddp</groupId>
+            <artifactId>ddp-monitor</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!-- 分析中心 -->
+        <dependency>
+            <groupId>com.fibo.ddp</groupId>
+            <artifactId>ddp-analysis</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <!-- 此配置不可缺，否则mybatis的Mapper.xml将会丢失 -->
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+            <!--指定资源的位置-->
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

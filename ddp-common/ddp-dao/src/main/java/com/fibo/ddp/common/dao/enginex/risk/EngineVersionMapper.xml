@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fibo.ddp.common.dao.enginex.risk.EngineVersionMapper">
+
+    <cache></cache>
+
+    <resultMap id="EngineVersionMap" type="com.fibo.ddp.common.model.enginex.risk.EngineVersion">
+        <id column="version_id" jdbcType="INTEGER" property="versionId"/>
+        <result column="engine_id" jdbcType="INTEGER" property="engineId"/>
+        <result column="version" jdbcType="INTEGER" property="version"/>
+        <result column="sub_version" jdbcType="INTEGER" property="subVersion"/>
+        <result column="boot_state" jdbcType="INTEGER" property="bootState"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="layout" jdbcType="INTEGER" property="layout"/>
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="create_time" jdbcType="VARCHAR" property="createTime"/>
+        <result column="latest_user" jdbcType="INTEGER" property="latestUser"/>
+        <result column="latest_time" jdbcType="VARCHAR" property="latestTime"/>
+
+        <result column="engine_name" jdbcType="VARCHAR" property="engineName"/>
+        <result column="description" jdbcType="VARCHAR" property="engineDesc"/>
+
+        <collection property="engineNodeList" ofType="engineNode" column="version_id"
+                    select="com.fibo.ddp.common.dao.enginex.risk.EngineNodeMapper.getEngineNodeListByEngineVersionId">
+        </collection>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    version_id, engine_id, version, boot_state, status, layout, user_id, create_time, 
+    latest_user, latest_time, sub_version
+  </sql>
+
+  <select id="getLatestEngineSubVersion" parameterType="com.fibo.ddp.common.model.enginex.risk.EngineVersion" resultType="com.fibo.ddp.common.model.enginex.risk.EngineVersion">
+    select
+    <include refid="Base_Column_List" />
+    from t_engine_version
+    where engine_id = #{engineId,jdbcType=INTEGER}
+    and version = #{version,jdbcType=INTEGER}
+    order by sub_version desc
+    limit 1
+  </select>
+
+  <select id="getLatestEngineVersion" parameterType="com.fibo.ddp.common.model.enginex.risk.EngineVersion" resultType="com.fibo.ddp.common.model.enginex.risk.EngineVersion">
+    select
+    <include refid="Base_Column_List" />
+    from t_engine_version
+    where engine_id = #{engineId,jdbcType=INTEGER}
+    order by version desc
+    limit 1
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="EngineVersionMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_engine_version
+    where version_id = #{versionId,jdbcType=INTEGER}
+  </select>
+
+  <delete id="cleanSubVersionByVersion" parameterType="java.util.Map">
+    delete from t_engine_version
+    where engine_id = #{engineId,jdbcType=INTEGER}
+    and version = #{version,jdbcType=INTEGER}
+    and sub_version != 0
+  </delete>
+
+  <insert id="insertOne" parameterType="com.fibo.ddp.common.model.enginex.risk.EngineVersion">
+    insert into t_engine_version (version_id, engine_id, version, 
+      sub_version, boot_state, status, layout, user_id, 
+      create_time, latest_user, latest_time
+      )
+    values (#{versionId,jdbcType=INTEGER}, #{engineId,jdbcType=INTEGER}, #{version,jdbcType=INTEGER},
+      #{subVersion,jdbcType=INTEGER},#{bootState,jdbcType=BIT}, #{status,jdbcType=BIT}, #{layout,jdbcType=BIT},
+      #{userId,jdbcType=INTEGER}, #{createTime,jdbcType=VARCHAR}, #{latestUser,jdbcType=INTEGER}, 
+      #{latestTime,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <insert id="insertEngineVersionAndReturnId" parameterType="com.fibo.ddp.common.model.enginex.risk.EngineVersion" useGeneratedKeys="true" keyProperty="versionId">
+    insert into t_engine_version
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="engineId != null">
+        engine_id,
+      </if>
+      <if test="version != null">
+        version,
+      </if>
+      <if test="subVersion != null">
+        sub_version,
+      </if>
+      <if test="bootState != null">
+        boot_state,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="layout != null">
+        layout,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="latestUser != null">
+        latest_user,
+      </if>
+      <if test="latestTime != null">
+        latest_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="engineId != null">
+        #{engineId,jdbcType=INTEGER},
+      </if>
+      <if test="version != null">
+        #{version,jdbcType=INTEGER},
+      </if>
+      <if test="subVersion != null">
+        #{subVersion,jdbcType=INTEGER},
+      </if>
+      <if test="bootState != null">
+        #{bootState,jdbcType=BIT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="layout != null">
+        #{layout,jdbcType=BIT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="latestUser != null">
+        #{latestUser,jdbcType=INTEGER},
+      </if>
+      <if test="latestTime != null">
+        #{latestTime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.fibo.ddp.common.model.enginex.risk.EngineVersion">
+    update t_engine_version
+    <set>
+      <if test="engineId != null">
+        engine_id = #{engineId,jdbcType=INTEGER},
+      </if>
+      <if test="version != null">
+        version = #{version,jdbcType=INTEGER},
+      </if>
+      <if test="subVersion != null">
+        sub_version = #{subVersion,jdbcType=INTEGER},
+      </if>
+      <if test="bootState != null">
+        boot_state = #{bootState,jdbcType=BIT},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="layout != null">
+        layout = #{layout,jdbcType=BIT},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="latestUser != null">
+        latest_user = #{latestUser,jdbcType=INTEGER},
+      </if>
+      <if test="latestTime != null">
+        latest_time = #{latestTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where version_id = #{versionId,jdbcType=INTEGER}
+  </update>
+
+  <update id="undeployVersion" parameterType="java.lang.Long">
+    update t_engine_version
+    set boot_state = 0
+    where engine_id = #{engineId,jdbcType=INTEGER}
+  </update>
+  <update id="updateBootState">
+    update t_engine_version
+    set boot_state = #{bootState}
+    where version_id = #{versionId}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.fibo.ddp.common.model.enginex.risk.EngineVersion">
+    update t_engine_version
+    set engine_id = #{engineId,jdbcType=INTEGER},
+      version = #{version,jdbcType=INTEGER},
+      sub_version = #{subVersion,jdbcType=INTEGER},
+      boot_state = #{bootState,jdbcType=BIT},
+      status = #{status,jdbcType=BIT},
+      layout = #{layout,jdbcType=BIT},
+      user_id = #{userId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=VARCHAR},
+      latest_user = #{latestUser,jdbcType=INTEGER},
+      latest_time = #{latestTime,jdbcType=VARCHAR}
+    where version_id = #{versionId,jdbcType=INTEGER}
+  </update>
+
+  <select id="getEngineVersionListByEngineId" parameterType="long" resultMap="EngineVersionMap">
+      select <include refid="Base_Column_List"/> from t_engine_version where engine_id =#{id}
+      order by version,sub_version
+  </select>
+
+  <!-- 新增的V2 -->
+  <select id="getEngineVersionListByEngineIdV2" parameterType="long" resultType="com.fibo.ddp.common.model.enginex.risk.EngineVersion">
+    select
+    <include refid="Base_Column_List"/>
+    from t_engine_version where engine_id = #{id}
+    order by version,sub_version
+  </select>
+
+    <select id="getEngineVersionByEngineId" parameterType="map" resultMap="EngineVersionMap">
+        select ev.version_id
+             , ev.engine_id
+             , ev.version
+             , ev.sub_version
+             , ev.latest_time
+             , e.name AS engine_name
+             , e.description
+        from t_engine_version ev, t_engine e
+        where ev.engine_id = e.id
+            and e.organ_id = ( select organ_id from t_user where user_id = #{userId} )
+            and ev.engine_id = #{engineId}
+        order by ev.version_id desc
+    </select>
+
+    <select id="selectAll" resultType="com.fibo.ddp.common.model.enginex.risk.EngineVersion">
+      select version_id,engine_id from t_engine_version   where status>-1;
+    </select>
+
+  <select id="countDecisionResult" resultType="com.fibo.ddp.common.model.enginex.risk.EngineResultSetDTO">
+       select
+	      DATE_FORMAT(t.create_datetime,"%Y-%m-%d") as callDate,
+          engine_id,
+          engine_code,
+          engine_version,
+          engine_name,
+          result,
+          e.organ_id,
+          count(1) as total
+          from
+          t_resultset t
+          left join
+           t_engine e
+           on t.engine_id = e.id
+           where datediff(now(),t.create_datetime)=0
+          GROUP BY
+		  DATE_FORMAT(t.create_datetime,"%Y-%m-%d"),
+          engine_id,
+          engine_code,
+          engine_version,
+          engine_name,
+          result;
+    </select>
+
+    <select id="getRunningVersion" parameterType="java.lang.Long" resultType="com.fibo.ddp.common.model.enginex.risk.EngineVersion">
+        select
+        <include refid="Base_Column_List" />
+        from t_engine_version
+        where engine_id = #{engineId,jdbcType=INTEGER}
+        and boot_state = 1
+    </select>
+</mapper>

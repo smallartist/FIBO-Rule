@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fibo.ddp.common.dao.strategyx.scorecard.ScorecardMapper">
+    <cache></cache>
+
+    <resultMap type="com.fibo.ddp.common.model.strategyx.scorecard.Scorecard" id="scorecardMap">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="description" property="description"/>
+        <result column="version" property="version"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="user_id" property="userId"/>
+        <result column="author" property="author"/>
+        <result column="author_name" property="authorName"/>
+        <result column="organ_id" property="organId"/>
+        <result column="engine_id" property="engineId"/>
+        <result column="status" property="status"/>
+        <result column="type" property="type"/>
+        <result column="score" property="score"/>
+        <result column="pd" property="pd"/>
+        <result column="odds" property="odds"/>
+        <result column="created" property="created"/>
+        <result column="updated" property="updated"/>
+        <result column="engine_name" property="engineName"/>
+    </resultMap>
+
+    <sql id="Base_Column">
+        s.id,
+        s.name,   
+        s.code,
+        s.description,
+        s.version,
+	    s.parent_id,
+	    s.user_id,
+	    s.author,
+	    u.nick_name as author_name,
+	    s.organ_id,
+	    s.engine_id,
+	    s.status,
+	    s.type,
+	    s.score,
+	    s.pd,
+	    s.odds,
+	    score_calculate_type,
+	    result_field_en,
+	    s.created,
+	    s.updated       
+    </sql>
+
+    <select id="getScorecardList" parameterType="Map" resultMap="scorecardMap">
+        select
+        <include refid="Base_Column"/>
+        from t_scorecard s left join t_user u on s.author = u.user_id
+        where 1 = 1
+        <if test="engineId != null and engineId != ''">
+            and engine_id = #{engineId}
+        </if>
+        <if test="parentIds != null and parentIds != ''">
+            and s.parent_id in
+            <foreach collection="parentIds" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="status != null and status != ''">
+            and s.status in
+            <foreach collection="status" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="organId != null and organId != ''">
+            and s.organ_id = #{organId}
+        </if>
+        <if test="type != null and type != ''">
+            and s.type = #{type}
+        </if>
+        <if test="key!=null and value!=null">
+            <choose>
+                <when test="key=='scorecardName'">
+                    and s.name like CONCAT('%',#{value},'%' )
+                </when>
+            </choose>
+        </if>
+        order by s.updated desc
+    </select>
+
+    <select id="checkByField" resultMap="scorecardMap">
+        select
+            s.id,
+            s.name,
+            s.engine_id,
+            e.name as engine_name
+        from t_scorecard s left join t_engine e on (e.id = s.engine_id)
+        where s.status = 1
+        <if test="engineId != null">
+            and s.engine_id = #{engineId}
+        </if>
+        and exists (select 1 from t_scorecard_content c
+            where s.id = c.scorecard_id
+            and c.field_id in
+            <foreach collection="fieldIds" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            )
+    </select>
+</mapper>

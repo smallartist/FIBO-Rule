@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fibo.ddp.common.dao.datax.datamanage.CustListMapper">
+
+    <resultMap type="com.fibo.ddp.common.model.datax.datamanage.CustList" id="custListMap">
+	     <id column="id" property="id"/>    
+	     <result column="t0" property="t0"/>    
+	     <result column="t1" property="t1"/>  
+	     <result column="t2" property="t2"/>    
+	     <result column="t3" property="t3"/> 
+	     <result column="t4" property="t4"/>  
+	     <result column="t5" property="t5"/> 
+	     <result column="t6" property="t6"/> 
+	     <result column="t7" property="t7"/> 
+	     <result column="t8" property="t8"/> 
+	     <result column="t9" property="t9"/> 
+	     <result column="t10" property="t10"/> 
+	     <result column="t11" property="t11"/> 
+	     <result column="t12" property="t12"/> 
+	     <result column="t13" property="t13"/> 
+	     <result column="t14" property="t14"/> 
+	     <result column="t15" property="t15"/>
+	     <result column="t16" property="t16"/> 
+	     <result column="t17" property="t17"/> 
+	     <result column="t18" property="t18"/> 
+	     <result column="t19" property="t19"/>
+	     <result column="userId" property="userId"/>
+	     <result column="created" property="created"/>
+	     <result column="nick_name" property="nickName"/>
+	     
+	     <result column="tableName" property="tableName"/>
+	     
+    </resultMap>
+    
+    <select id="findCustList" parameterType="map"  resultMap="custListMap">
+         select id,t0,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,user_id as userId,created
+           from ${tableName}
+	</select>
+	
+	<select id="searchTop4Column" parameterType="map"  resultMap="custListMap">
+         select ${colTop4Array}
+           from ${tableName}
+          where t0 like '%${searchKey}%'
+                or t1 like '%${searchKey}%'
+                or t2 like '%${searchKey}%'
+                or t3 like '%${searchKey}%'
+       order by created desc
+	</select>
+	
+	<select id="findValidColumnData" parameterType="map"  resultMap="custListMap">
+         select ${validColArray}
+           from ${tableName}
+	</select>
+	
+	<select id="findById" parameterType="map"  resultMap="custListMap">
+         select ${fieldName}
+           from ${tableName}
+          where id = #{id}
+	</select>
+	
+	<select id="findByQueryKey" parameterType="map"  resultType="java.lang.Integer">
+         select count(1)
+           from ${tableName}
+          where ${queryKey}
+	</select>
+	
+	<select id="revFindByQueryKey" parameterType="map"  resultType="java.lang.Integer">
+         select ${revQueryKey}
+           from ${tableName}
+	</select>
+	
+	<insert id="createCustList" useGeneratedKeys="true" keyProperty="id" parameterType="custList">
+	   insert into ${tableName} 
+	             ( t0, t1, t2, t3, t4, t5, t6, t7, t8, t9
+	             , t10, t11, t12, t13, t14, t15, t16, t17, t18, t19
+	             , user_id, created, nick_name )
+             values (  #{t0}, #{t1}, #{t2}, #{t3}, #{t4}
+                     , #{t5}, #{t6}, #{t7}, #{t8}, #{t9}
+                     , #{t10}, #{t11}, #{t12}, #{t13}, #{t14}
+                     , #{t15}, #{t16}, #{t17}, #{t18}, #{t19}
+                     , #{userId}, now(), #{nickName} )
+	</insert>
+	
+	<update id="updateCustList" parameterType="map">
+       update ${tableName} 
+          set  t0 = #{t0}, t1 = #{t1}, t2 = #{t2}, t3 = #{t3}, t4 = #{t4}
+             , t5 = #{t5}, t6 = #{t6}, t7 = #{t7}, t8 = #{t8}, t9 = #{t9}
+             , t10 = #{t10}, t11 = #{t11}, t12 = #{t12}, t13 = #{t13}, t14 = #{t14}
+             , t15 = #{t15}, t16 = #{t16}, t17 = #{t17}, t18 = #{t18}, t19 = #{t19}
+             , user_id = #{userId}, created = now()
+        where id = #{id} 
+    </update>
+    
+    <delete id="deleteCustList" parameterType="map" >
+	   delete from ${tableName} 
+	    where id in
+              <foreach collection="Ids" item="item" index="index" open="(" separator="," close=")">  
+                #{item}
+              </foreach>
+	</delete>
+	
+	<select id="checkDupCustList" parameterType="map"  resultType="java.lang.Integer">
+         select count(1)
+           from ${tableName}
+          where ${checkCol}
+	</select>
+	
+	<insert id="importOneCustList" useGeneratedKeys="true" keyProperty="id" parameterType="custList">
+	   insert into ${tableName} 
+	             ( t0, t1, t2, t3, t4, t5, t6, t7, t8, t9
+	             , t10, t11, t12, t13, t14, t15, t16, t17, t18, t19
+	             , user_id, created, nick_name )
+             values (  #{t0}, #{t1}, #{t2}, #{t3}, #{t4}
+                     , #{t5}, #{t6}, #{t7}, #{t8}, #{t9}
+                     , #{t10}, #{t11}, #{t12}, #{t13}, #{t14}
+                     , #{t15}, #{t16}, #{t17}, #{t18}, #{t19}
+                     , #{userId}, now(), #{nickName} )
+	</insert>
+	
+</mapper>

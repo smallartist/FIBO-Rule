@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fibo.ddp.common.dao.monitor.decisionflow.TMonitorStrategyMapper">
+    <select id="countRule" resultType="com.fibo.ddp.common.model.monitor.decisionflow.TMonitorStrategyDTO">
+    select
+	DATE_FORMAT(t.create_time,"%Y-%m-%d") as callDate,
+	engine_id,
+	engine_version_id,
+	organ_id,
+	strategy_id,
+	strategy_name,
+	result,
+	count(1) as total
+	from
+	t_monitor_strategy t
+	where datediff(now(),t.create_time)=0
+	and t.strategy_type = '2'
+    GROUP BY
+	DATE_FORMAT(t.create_time,"%Y-%m-%d"),
+ 	engine_id,
+	engine_version_id,
+	organ_id,
+	strategy_id,
+	strategy_name,
+	result
+    </select>
+    <select id="countScorecardHit" resultType="com.fibo.ddp.common.model.monitor.decisionflow.TMonitorStrategyDTO">
+	select
+	DATE_FORMAT(t.create_time,"%Y-%m-%d") as callDate,
+	engine_id,
+	engine_version_id,
+	organ_id,
+	strategy_id,
+	strategy_name,
+	result,
+	count(1) as total
+	from
+	t_monitor_strategy t
+	where datediff(now(),t.create_time)=0
+	and t.strategy_type = '4'
+    GROUP BY
+	DATE_FORMAT(t.create_time,"%Y-%m-%d"),
+ 	engine_id,
+	engine_version_id,
+	organ_id,
+	strategy_id,
+	strategy_name,
+	result
+	</select>
+    <select id="countDecisionTables" resultType="com.fibo.ddp.common.model.monitor.decisionflow.TMonitorStrategyDTO">
+	select
+	DATE_FORMAT(t.create_time,"%Y-%m-%d") as callDate,
+	engine_id,
+	engine_version_id,
+	organ_id,
+	strategy_id,
+	strategy_name,
+	result,
+	count(1) as total
+	from
+	t_monitor_strategy t
+	where datediff(now(),t.create_time)=0
+	and t.strategy_type = '16'
+    GROUP BY
+	DATE_FORMAT(t.create_time,"%Y-%m-%d"),
+ 	engine_id,
+	engine_version_id,
+	organ_id,
+	strategy_id,
+	strategy_name,
+	result
+	</select>
+</mapper>

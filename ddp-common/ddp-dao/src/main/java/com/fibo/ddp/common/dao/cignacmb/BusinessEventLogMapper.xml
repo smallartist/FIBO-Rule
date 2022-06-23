@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fibo.ddp.common.dao.cignacmb.BusinessEventLogMapper">
+
+    <resultMap type="com.fibo.ddp.common.model.cignacmb.BusinessEventLog" id="TBusinessEventLogMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="batchNo" column="batch_no" jdbcType="VARCHAR"/>
+        <result property="eventRequestId" column="event_request_id" jdbcType="VARCHAR"/>
+        <result property="eventId" column="event_id" jdbcType="VARCHAR"/>
+        <result property="eventName" column="event_name" jdbcType="VARCHAR"/>
+        <result property="businessName" column="business_name" jdbcType="VARCHAR"/>
+        <result property="businessCode" column="business_code" jdbcType="VARCHAR"/>
+        <result property="businessChildName" column="business_child_name" jdbcType="VARCHAR"/>
+        <result property="businessChildCode" column="business_child_code" jdbcType="VARCHAR"/>
+        <result property="templateId" column="template_id" jdbcType="VARCHAR"/>
+        <result property="templateName" column="template_name" jdbcType="VARCHAR"/>
+        <result property="customerName" column="customer_name" jdbcType="VARCHAR"/>
+        <result property="customerMobile" column="customer_mobile" jdbcType="VARCHAR"/>
+        <result property="policyNo" column="policy_no" jdbcType="VARCHAR"/>
+        <result property="sendPlatform" column="send_platform" jdbcType="VARCHAR"/>
+        <result property="callStartTime" column="call_start_time" jdbcType="TIMESTAMP"/>
+        <result property="callEndTime" column="call_end_time" jdbcType="TIMESTAMP"/>
+        <result property="callTime" column="call_time" jdbcType="INTEGER"/>
+        <result property="callStatus" column="call_status" jdbcType="INTEGER"/>
+        <result property="ruleLogIds" column="rule_log_ids" jdbcType="VARCHAR"/>
+        <result property="organId" column="organ_id" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultType="com.fibo.ddp.common.model.cignacmb.response.EventLogResponse">
+        select
+            id,
+            batch_no,
+            event_request_id,
+            event_id,
+            event_name,
+            business_name,
+            business_child_name,
+            template_id,
+            template_name,
+            customer_name,
+            customer_mobile,
+            policy_no,
+            send_platform,
+            call_start_time,
+            call_time,
+            call_status,
+            rule_log_ids,
+            organ_id
+        from t_business_event_log
+        <where>
+            <if test="eventRequestId != null and eventRequestId != ''">
+                and event_request_id like CONCAT('%',#{eventRequestId},'%')
+            </if>
+            <if test="businessName != null and businessName != ''">
+                and business_name like CONCAT('%',#{businessName},'%')
+            </if>
+            <if test="businessChildName != null and businessChildName != ''">
+                and business_child_name like CONCAT('%',#{businessChildName},'%')
+            </if>
+            <if test="templateId != null and templateId != ''">
+                and template_id like CONCAT('%',#{templateId},'%')
+            </if>
+            <if test="startTime != null and endTime != null">
+                and create_time between #{startTime} and #{endTime}
+            </if>
+            <if test="organId != null">
+                and organ_id = #{organId}
+            </if>
+        </where>
+        order by id desc
+    </select>
+
+</mapper>
+

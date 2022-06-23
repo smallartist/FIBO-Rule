@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fibo.ddp.common.dao.strategyx.listlibrary.ListDbMapper">
+    <cache></cache>
+    <resultMap type="com.fibo.ddp.common.model.strategyx.listlibrary.ListDb" id="listDbMap">
+	     <id column="id" property="id"/>    
+	     <result column="list_type" property="listType"/>    
+	     <result column="list_name" property="listName"/> 
+	     <result column="data_source" property="dataSource"/>   
+	     <result column="list_attr" property="listAttr"/>
+	     <result column="list_desc" property="listDesc"/> 
+	     <result column="table_column" property="tableColumn"/> 
+	     <result column="match_type" property="matchType"/> 
+	     <result column="query_type" property="queryType"/> 
+	     <result column="query_field" property="queryField"/>
+	     <result column="organ_id" property="organId"/>
+	     <result column="status" property="status"/>
+	     <result column="user_id" property="userId"/>
+	     <result column="nickName" property="nickName"/>
+	     <result column="created" property="created"/>
+         <result column="result_field_en" property="resultFieldEn"/>
+    </resultMap>
+    
+    <select id="findByUser" parameterType="map"  resultType="listDb">
+         select    l.id, l.list_type as listType, l.list_name as listName, l.data_source as dataSource, l.list_attr as listAttr, l.list_desc as listDesc
+                 , l.table_column as tableColumn, l.match_type as matchType
+	             , l.query_type as queryType, l.query_field as queryField, l.organ_id as organId, l.status, l.user_id as userId, u.nick_name as nickName, l.created,result_field_en as resultFieldEn
+          from t_list_db l, t_user u 
+         where l.user_id = u.user_id
+               <if test="listType!=null and listType!=''">
+                   and l.list_type = #{listType}
+               </if>
+               <if test="status != null">
+               and l.status = ${status}
+               </if>
+               <if test="status == null">
+               and l.status != -1
+               </if>
+               and l.organ_id = ( select organ_id from t_user where user_id = #{userId} )
+               order by l.created desc
+	</select>
+	
+	<select id="checkByField" parameterType="map"  resultType="String">
+          select group_concat(l.id) as id
+            from t_list_db l, t_user u
+           where l.user_id = u.user_id 
+                 and l.organ_id = ( select organ_id from t_user where user_id = #{userId} )
+                 and instr(l.table_column,#{fieldId}) > 0
+                 and l.status = 1
+	</select>
+     
+    <update id="updateStatus" parameterType="map">
+       update t_list_db
+          set status = #{status},  user_id = #{userId}, created = now()
+        where organ_id = ( select organ_id from t_user where user_id = #{userId} )
+              and id in
+                 <foreach collection="Ids" item="item" index="index" open="(" separator="," close=")">  
+                   #{item}
+                 </foreach>
+    </update>
+    
+    <insert id="createListDb" useGeneratedKeys="true" keyProperty="id" parameterType="listDb">
+	   insert into t_list_db (  list_type, list_name, data_source, list_attr, list_desc, table_column, match_type
+	                        , query_type, query_field, organ_id, status, user_id, created,result_field_en)
+                   values (  #{listType}, #{listName}, #{dataSource}, #{listAttr}, #{listDesc}, #{tableColumn}, #{matchType}
+                            , #{queryType}, #{queryField}, #{organId}, #{status}, #{userId}, now() ,#{resultFieldEn})
+	</insert>
+	
+	<update id="createTable" parameterType="map">
+         ${sqlStr}
+    </update>
+    
+    <update id="createIndex" parameterType="map">
+         ${indexSql}
+    </update>
+    
+    <select id="findById" parameterType="map"  resultType="listDb">
+         select    id, list_type as listType, list_name as listName, data_source as dataSource, list_attr as listAttr, list_desc as listDesc
+                 , table_column as tableColumn, match_type as matchType
+	             , query_type as queryType, query_field as queryField, organ_id as organId, status, user_id as userId, created,result_field_en as resultFieldEn
+          from t_list_db
+         where id = #{id}
+
+         <if test="listType!=null and listType!=''">
+             and list_type = #{listType}
+         </if>
+               and organ_id = ( select organ_id from t_user where user_id = #{userId} )
+	</select>
+	
+	<select id="findListDbByIds" parameterType="map" resultType="listDb">
+        select id, list_name as listName, list_type as listType
+               , table_column as tableColumn, query_field as queryField
+               , match_type as matchType, query_type as queryType,result_field_en as resultFieldEn
+          from t_list_db
+         where id in
+        		<foreach collection="listDbIds" item="item" index="index" open="(" separator="," close=")">  
+              	  #{item}
+              	</foreach>
+                <if test="userId != null">
+                  and organ_id = ( select organ_id from t_user where user_id = #{userId} )
+                </if>
+	</select>
+	
+	<select id="findFieldsByListDbIds" parameterType="map" resultType="String">
+	    select group_concat(table_column)
+	      from t_list_db
+	     where organ_id = ( select organ_id from t_user where user_id = #{userId} )
+	           and id in
+	           <foreach collection="listDbIds" item="item" index="index" open="(" separator="," close=")">  
+              	  #{item}
+               </foreach>
+	</select>
+	
+	<update id="updateListDb" parameterType="map">
+       update t_list_db
+          set list_type = #{listType}, list_name = #{listName}, data_source = #{dataSource}, list_attr = #{listAttr}, list_desc = #{listDesc}, table_column = #{tableColumn}
+              , match_type = #{matchType}, query_type = #{queryType}, query_field = #{queryField}
+              ,  user_id = #{userId}, created = now(),result_field_en = #{resultFieldEn}
+        where id = #{id} 
+              and organ_id = ( select organ_id from t_user where user_id = #{userId} )
+    </update>
+    
+    <select id="isExists" parameterType="map"  resultType="java.lang.Integer">
+          select count(1) as ct
+            from t_list_db l, t_user u
+           where l.user_id = u.user_id
+                 and l.organ_id = ( select organ_id from t_user where user_id = #{userId} )
+                 and l.list_type = #{listType}
+                 and l.list_name = #{listName}
+                 <if test="listDbId != null">
+                 and l.id != #{listDbId}
+                 </if>
+	</select>
+	<select id="selectFieldIdsByListDbId" parameterType="long" resultType="string">
+        select table_column
+        from t_list_db
+        where
+        id  = #{id}
+    </select>
+
+    <insert id="customInsert" parameterType="java.util.Map">
+		${sqlStr}
+	</insert>
+
+    <select id="customSelect" resultType="java.util.LinkedHashMap">
+		${sqlStr}
+	</select>
+</mapper>

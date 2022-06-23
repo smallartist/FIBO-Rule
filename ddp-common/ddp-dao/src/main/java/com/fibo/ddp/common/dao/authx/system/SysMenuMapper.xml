@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fibo.ddp.common.dao.authx.system.SysMenuMapper">
+  
+  <resultMap type='SysMenu' id='menuMap'>
+    <id property='resourceId' column='resource_id' />
+    <result property='userId' column='user_id' />
+    <result property='name' column='name' />
+    <result property='code' column='code' />
+    <result property='url' column='url' />
+    <result property='parentId' column='parent_id' />
+    <result property='resourceSystem' column='resource_system' />
+    <result property='des' column='des' />
+    <result property='birth' column='birth' />
+    <result property='icon' column='icon' />
+    <result property='sort' column='sort' />
+    <result property='status' column='status' />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    resource_id, user_id, name, code, url, parent_id, des,resource_system, birth, icon, sort, status
+   </sql>
+  
+  <select id='getAllSysMenu' resultMap='menuMap' parameterType="SysMenu">
+    select 
+    <include refid="Base_Column_List" />
+    from t_resource  where status != -1
+      <if test="resourceSystem != null and resourceSystem !=''">
+          and resource_system = #{resourceSystem}
+      </if>
+    order by resource_id 
+  </select>
+  
+  <select id='findById' resultMap='menuMap'>
+    select 
+    <include refid="Base_Column_List" />
+    from t_resource 
+    where resource_id = #{resourceId} and status !=-1
+  </select>
+  <!-- 分配资源树 -->
+   <select id='findTreeList' resultMap='menuMap' parameterType="SysMenu">
+    select 
+    re.resource_id, re.user_id, re.name, re.code, re.url, re.parent_id, re.des,re.resource_system, re.birth, re.icon, re.status
+	from t_role ro, t_role_resource_rel rr, t_resource re  
+	where ro.role_id = rr.role_id AND rr.resource_id = re.resource_id
+       <if test="resourceSystem != null and resourceSystem !=''">
+           and resource_system = #{resourceSystem}
+       </if>
+	and  rr.role_id = #{roleId} and re.status = 1 order by re.sort asc
+  </select>
+  <!-- 查询所有可用资源 -->
+  <select id="getAllValidMenu" resultMap="menuMap">
+  	select
+  	<include refid="Base_Column_List" />
+  	from t_resource
+  	where  status = 1
+      <if test="resourceSystem != null and resourceSystem !=''">
+          and resource_system = #{resourceSystem}
+      </if>
+      order by sort asc
+  </select>
+  <!-- 验证唯一性 -->
+  <select id='validateMenuOnly' resultMap='menuMap' parameterType="SysMenu">
+    select 
+    <include refid="Base_Column_List" />
+    from t_resource 
+    where  (name = #{name} or code = #{code}) 
+    	and status != -1 
+    <if test="resourceId != null and resourceId !='' and resourceId !=0">
+     	and resource_id != #{resourceId}
+    </if>
+      <if test="resourceSystem != null and resourceSystem !=''">
+          and resource_system = #{resourceSystem}
+      </if>
+  </select>
+  <insert id="createSysMenu" parameterType="SysMenu">
+    insert into t_resource (user_id, name, code, url, parent_id, des,resource_system, birth, icon, sort)
+    values (#{userId}, #{name}, #{code}, #{url}, #{parentId}, #{des},#{resourceSystem}, now(), #{icon}, #{sort})
+  </insert>
+  
+   <!--保存菜单角色关系 -->
+  <insert id="insertRoleMenu">
+   	insert into t_role_resource_rel (role_id, resource_id)
+    values 
+    <foreach collection="list" item="ids" index="index" separator="," >  
+        (#{roleId}, #{ids})  
+    </foreach>  
+  </insert>
+    
+  <update id="updateSysMenu" parameterType="SysMenu" >
+    update t_resource set  name=#{name}, 
+      	url=#{url}, 
+      <if test="des != null and des !=''">
+      	des=#{des},
+      </if>
+      <if test="resourceSystem != null and resourceSystem !=''">
+        resource_system = #{resourceSystem},
+      </if>
+      <if test="icon != null and icon !=''">
+      	icon=#{icon},
+      </if>
+      <if test="userId != null and userId !=''">
+    	user_id=#{userId},
+      </if>
+      <if test="parentId != null">
+     	 parent_id=#{parentId},
+      </if>
+      <if test="sort != null">
+          sort=#{sort},
+      </if>
+      	code=#{code}
+    where resource_id = #{resourceId}
+  </update>
+  <!-- 删除菜单角色关系 -->
+  <delete id="deleteRoleMenu">
+  	delete from t_role_resource_rel where role_id = #{roleId}
+  </delete>
+  
+  <update id="updateStatus">
+    update t_resource set status=#{status}
+    <where>
+    		<if test="list!=null and list.size()>0">
+   		    resource_id in 
+   		    	<foreach collection="list" item="ids" index="index" 
+					open="(" separator="," close=")">#{ids}
+			    </foreach>
+			</if>
+	</where>
+  </update>
+</mapper>

@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fibo.ddp.common.dao.enginex.risk.EngineMapper">
+	<cache></cache>
+
+	<resultMap type="com.fibo.ddp.common.model.enginex.risk.Engine" id="engineMap">
+		<id column="id" property="id"/>
+		<result column="code" property="code"/>
+		<result column="name" property="name"/>
+		<result column="description" property="description"/>
+		<result column="status" property="status"/>
+		<result column="create_datetime" property="createDatetime"/>
+		<result column="update_datetime" property="updateDatetime"/>
+		<result column="creator" property="creator"/>
+		<result column="organ_id" property="organId"/>
+		<result column="user_id" property="userId"/>
+		<result column="callback_type" property="callbackType"/>
+		<result column="callback_url" property="callbackUrl"/>
+
+		<collection property="engineVersionList" ofType="com.fibo.ddp.common.model.enginex.risk.EngineVersion" column="id"
+					select="com.fibo.ddp.common.dao.enginex.risk.EngineVersionMapper.getEngineVersionListByEngineId">
+		</collection>
+	</resultMap>
+
+	<!-- 新增引擎并返回ID -->
+     <insert id="insertEngineAndReturnId" parameterType="engine"  useGeneratedKeys="true" keyProperty="id">
+	   INSERT INTO 
+	       t_engine
+	    <trim prefix="(" suffix=")">
+	        <if test="code != null">
+	           code,
+	        </if> 
+	        <if test="name != null">
+	           name,
+	        </if>
+	        <if test="description != null">
+	           description,
+	        </if>
+	        <if test="creator != null">
+	           creator,
+	        </if>
+	        <if test="userId != null">
+	           user_id,
+	        </if>
+	        <if test="organId != null">
+	           organ_id,
+	        </if>
+	        <if test="status != null">
+	           status,
+	        </if>
+			<if test="callbackType != null">
+				callback_type,
+			</if>
+			<if test="callbackUrl != null">
+				callback_url,
+			</if>
+			<if test="exceptionCallbackUrl != null">
+				exception_callback_url,
+			</if>
+	        create_datetime,update_datetime	           
+	    </trim>
+	    values
+	     <trim prefix="(" suffix=")">
+	        <if test="code != null">
+	           #{code},
+	        </if> 
+	        <if test="name != null">
+	           #{name},
+	        </if>
+	        <if test="description != null">
+	           #{description},
+	        </if>
+	        <if test="creator != null">
+	           #{creator},
+	        </if>
+	        <if test="userId != null">
+	           #{userId},
+	        </if>
+	        <if test="organId != null">
+	           #{organId},
+	        </if>
+	        <if test="status != null">
+	           #{status},
+	        </if>
+			<if test="callbackType != null">
+				#{callbackType},
+			</if>
+			<if test="callbackUrl != null">
+				#{callbackUrl},
+			</if>
+			 <if test="exceptionCallbackUrl != null">
+				 #{exceptionCallbackUrl},
+			 </if>
+	        now(),now()       
+	    </trim>
+	</insert>
+
+	<update id="updateEngine" parameterType="engine"  >
+		 UPDATE  t_engine 
+		 <set>
+		   <if test="code != null">
+		     code = #{code},
+		   </if>
+		   <if test="name != null">
+		     name = #{name},
+		   </if>
+		   <if test="description != null">
+		    	description = #{description},
+		   </if>
+		   <if test="status != null">
+		     status = #{status},
+		   </if>
+		   <if test="creator != null">
+		     creator = #{creator},
+		   </if>
+		   <if test="userId != null">
+		     user_id = #{userId},
+		   </if>
+		   <if test="callbackType != null">
+			 callback_type = #{callbackType},
+		   </if>
+		   <if test="callbackUrl != null">
+			 callback_url = #{callbackUrl},
+		   </if>
+		   <if test="exceptionCallbackUrl != null">
+			 exception_callback_url = #{exceptionCallbackUrl},
+		   </if>
+		</set>		    		  
+	   		WHERE
+	         organ_id= #{organId}	
+	          and id = #{id}
+	</update>
+	
+	<select id="getEngineByList" parameterType="engine" resultMap="engineMap" >
+       SELECT 
+            *
+         FROM  
+            t_engine 
+         where 
+                status>-1  and
+                organ_id =#{organId}
+               
+		 <if test="searchString != null and searchString !=''">		    
+     		  and (code like CONCAT('%',TRIM('${searchString}'),'%' ) or name like CONCAT('%',TRIM('${searchString}'),'%' ))   
+		 </if>	
+		 order by update_datetime desc		
+	</select>
+
+	<!-- 根据权限查询本公司引擎 -->
+	<select id="getEngineList" resultMap="engineMap">
+		SELECT
+		*
+		FROM
+		t_engine
+		where
+		status>-1 and
+		organ_id = #{organId}
+		<if test="searchString != null and searchString !=''">
+			and (code like CONCAT('%',TRIM('${searchString}'),'%' ) or name like CONCAT('%',TRIM('${searchString}'),'%'
+			))
+		</if>
+		order by update_datetime desc
+	</select>
+
+	<select id="getEngineById" resultMap="engineMap" parameterType="engine">
+		SELECT
+			*
+		FROM
+			t_engine
+		where
+			status > -1
+			and organ_id = #{organId}
+			and id = #{id}
+	</select>
+
+	<select id="getIndexEngineBaseInfo" parameterType="map" resultType="map">
+		SELECT
+		  COUNT(DISTINCT e.`id`) AS engineNum,
+		  COUNT(DISTINCT en.`node_id`) AS engineNodeNum,
+		  COUNT(DISTINCT rt.`id`) AS engineResultNum
+		FROM
+		  t_organization o
+		  LEFT JOIN t_engine e
+			ON o.`organ_id` = e.`organ_id`
+		  LEFT JOIN t_engine_version ev
+			ON e.`id` = ev.`engine_id`
+		  LEFT JOIN t_engine_node en
+			ON ev.`version_id` = en.`version_id`
+		  LEFT JOIN t_resultset rt
+			ON e.`id` = rt.`engine_id`
+		WHERE o.`organ_id` = #{organId}
+	</select>
+
+	<select id="getIndexRecentDayEngineUseInfo" parameterType="map" resultType="indexEngineReportVo">
+		SELECT
+		  DATE_FORMAT(rt.`create_datetime`, '%Y-%m-%d') AS dayTime,
+		  rt.`engine_id` AS engineId,
+		  e.`name` AS engineName,
+		  COUNT(DISTINCT rt.`id`) AS useNum
+		FROM
+		  t_organization o
+		  INNER JOIN t_engine e
+			ON o.`organ_id` = e.`organ_id`
+		  INNER JOIN t_resultset rt
+			ON e.`id` = rt.`engine_id`
+		WHERE o.`organ_id` = #{organId}
+		AND rt.`create_datetime` >= DATE_SUB(NOW(),INTERVAL 7 DAY)
+		GROUP BY DATE_FORMAT(rt.`create_datetime`, '%Y-%m-%d'), rt.`engine_id`
+	</select>
+
+	<select id="getIndexRecentMonthEngineUseInfo" parameterType="map" resultType="indexEngineReportVo">
+		SELECT
+		  DATE_FORMAT(rt.`create_datetime`, '%Y-%m') AS monthTime,
+		  rt.`engine_id` AS engineId,
+		  e.`name` AS engineName,
+		  COUNT(DISTINCT rt.`id`) AS useNum
+		FROM
+		  t_organization o
+		  INNER JOIN t_engine e
+			ON o.`organ_id` = e.`organ_id`
+		  INNER JOIN t_resultset rt
+			ON e.`id` = rt.`engine_id`
+		WHERE o.`organ_id` = #{organId}
+		AND rt.`create_datetime` >= DATE_SUB(NOW(),INTERVAL 6 MONTH)
+		GROUP BY DATE_FORMAT(rt.`create_datetime`, '%Y-%m'), rt.`engine_id`
+	</select>
+
+	<select id="getIndexEngineUseRatio" parameterType="map" resultType="map">
+		SELECT
+		  engineId,
+		  engineName,
+		  useNum,
+		  totleNum,
+		  ROUND(useNum / totleNum * 100, 1) AS useRatio
+		FROM
+		  (SELECT
+			*
+		  FROM
+			(SELECT
+			  rt.`engine_id` AS engineId,
+			  e.`name` AS engineName,
+			  COUNT(DISTINCT rt.`id`) AS useNum
+			FROM
+			  t_organization o
+			  INNER JOIN t_engine e
+				ON o.`organ_id` = e.`organ_id`
+			  INNER JOIN t_resultset rt
+				ON e.`id` = rt.`engine_id`
+			WHERE o.`organ_id` = #{organId}
+			GROUP BY rt.`engine_id`) t1
+			INNER JOIN
+			  (SELECT
+				COUNT(DISTINCT rt.`id`) AS totleNum
+			  FROM
+				t_organization o
+				INNER JOIN t_engine e
+				  ON o.`organ_id` = e.`organ_id`
+				INNER JOIN t_resultset rt
+				  ON e.`id` = rt.`engine_id`
+			  WHERE o.`organ_id` = #{organId}) t2
+			  ON 1 = 1) tt
+			  limit 4
+	</select>
+
+</mapper>

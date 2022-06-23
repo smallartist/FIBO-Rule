@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fibo.ddp.common.dao.enginex.risk.EngineNodeMapper">
+  <cache></cache>
+  <resultMap id="EngineNodeMap" type="com.fibo.ddp.common.model.enginex.risk.EngineNode">
+    <id column="node_id" jdbcType="INTEGER" property="nodeId" />
+    <result column="version_id" jdbcType="INTEGER" property="versionId" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="node_name" jdbcType="VARCHAR" property="nodeName" />
+    <result column="node_code" jdbcType="VARCHAR" property="nodeCode" />
+    <result column="node_order" jdbcType="INTEGER" property="nodeOrder" />
+    <result column="node_type" jdbcType="INTEGER" property="nodeType" />
+    <result column="node_x" jdbcType="DECIMAL" property="nodeX" />
+    <result column="node_y" jdbcType="DECIMAL" property="nodeY" />
+    <result column="node_json" jdbcType="LONGVARCHAR" property="nodeJson" />
+    <result column="node_script" jdbcType="LONGVARCHAR" property="nodeScript" />
+    <result column="next_nodes" jdbcType="LONGVARCHAR" property="nextNodes" />
+    <result column="params" jdbcType="LONGVARCHAR" property="params" />
+    <result column="snapshot" jdbcType="LONGVARCHAR" property="snapshot" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    node_id, parent_id, version_id, node_name, node_code, node_order, node_type, node_x, node_y,node_json,node_script,next_nodes,params
+  </sql>
+  
+  <select id="getEngineTypedNodeListByEngineVersionId" resultMap="EngineNodeMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_engine_node
+    where version_id =#{versionId}
+    and node_type in
+    <foreach collection="types" item = "item" open="(" separator="," close=")">
+    	#{item} 
+    </foreach>
+     ORDER BY node_order ASC
+  </select>
+  
+  <delete id = "deleteNodesByNodeIds" parameterType = "java.util.List">  
+    <![CDATA[  
+       delete from t_engine_node where node_id in  
+    ]]>  
+    <foreach collection="commons" item = "item" open="(" separator="," close=")">
+    	#{item} 
+    </foreach>  
+  </delete> 
+  
+  <insert id="insert" parameterType="engineNode" useGeneratedKeys="true" keyProperty="nodeId">
+    insert into t_engine_node (node_id, parent_id,version_id, node_name, 
+      node_code, node_order, node_type, 
+      node_x, node_y, node_json, 
+      node_script, next_nodes, params
+      )
+    values (#{nodeId,jdbcType=INTEGER},#{parentId,jdbcType=INTEGER}, #{versionId,jdbcType=INTEGER}, #{nodeName,jdbcType=VARCHAR}, 
+      #{nodeCode,jdbcType=VARCHAR}, #{nodeOrder,jdbcType=INTEGER}, #{nodeType,jdbcType=INTEGER}, 
+      #{nodeX,jdbcType=DECIMAL}, #{nodeY,jdbcType=DECIMAL}, #{nodeJson,jdbcType=LONGVARCHAR}, 
+      #{nodeScript,jdbcType=LONGVARCHAR}, #{nextNodes,jdbcType=LONGVARCHAR}, #{params,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  
+  <insert id="insertNodeAndReturnId" parameterType="engineNode" useGeneratedKeys="true" keyProperty="nodeId">
+     insert into t_engine_node (version_id,parent_id, node_name, 
+      node_code, node_order, node_type, 
+      node_x, node_y, node_json, 
+      node_script, next_nodes, params
+      )
+    values (#{versionId,jdbcType=INTEGER},#{parentId,jdbcType=INTEGER}, #{nodeName,jdbcType=VARCHAR}, 
+      #{nodeCode,jdbcType=VARCHAR}, #{nodeOrder,jdbcType=INTEGER}, #{nodeType,jdbcType=INTEGER}, 
+      #{nodeX,jdbcType=DECIMAL}, #{nodeY,jdbcType=DECIMAL}, #{nodeJson,jdbcType=LONGVARCHAR}, 
+      #{nodeScript,jdbcType=LONGVARCHAR}, #{nextNodes,jdbcType=LONGVARCHAR}, #{params,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+
+  <insert id="insertNodeAndReturnIdV2" parameterType="engineNode" useGeneratedKeys="true" keyProperty="nodeId">
+     insert into t_engine_node (version_id,parent_id, node_name,
+      node_code, node_order, node_type,
+      node_x, node_y, node_json,
+      node_script, next_nodes, params
+      )
+    values (#{versionId,jdbcType=INTEGER},#{parentId,jdbcType=INTEGER}, #{nodeName,jdbcType=VARCHAR},
+      #{nodeCode,jdbcType=VARCHAR}, #{nodeOrder,jdbcType=INTEGER}, #{nodeType,jdbcType=INTEGER},
+      #{nodeX,jdbcType=DECIMAL}, #{nodeY,jdbcType=DECIMAL}, #{nodeJson,jdbcType=LONGVARCHAR},
+      #{nodeScript,jdbcType=LONGVARCHAR}, #{nextNodes,jdbcType=LONGVARCHAR}, #{params,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  
+   <update id="updateNodePosition" parameterType="engineNode">
+    update t_engine_node
+    set   node_x = #{nodeX,jdbcType=DECIMAL},
+      node_y = #{nodeY,jdbcType=DECIMAL}     
+    where node_id = #{nodeId,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateNextNodes" parameterType="engineNode">
+    update t_engine_node
+    set next_nodes = #{nextNodes}
+    where node_id = #{nodeId}
+  </update>
+  
+  <update id="updateParentIdByNodeId" parameterType="java.util.Map">
+    update t_engine_node
+    set parent_id = #{parentId}
+    where node_id = #{nodeId}
+  </update>
+  
+  <!-- 更新节点名称 -->
+  <update id="renameNode" parameterType="java.util.Map">
+    update t_engine_node
+    set node_name = #{nodeName,jdbcType=VARCHAR}     
+    where node_id = #{nodeId,jdbcType=INTEGER}
+  </update>
+
+  <!-- 更新节点名称 -->
+  <update id="updateSnapshot" parameterType="java.util.Map">
+    update t_engine_node
+    set snapshot = #{snapshot,jdbcType=VARCHAR}
+    where node_id = #{nodeId,jdbcType=INTEGER}
+  </update>
+  
+    <select id="getEngineNodeListByEngineVersionId" parameterType="long" resultMap="EngineNodeMap">
+        select <include refid="Base_Column_List"/>
+        from t_engine_node
+        where version_id = #{engineVersionId}
+        ORDER BY node_order ASC
+    </select>
+  
+  <select id="getMaxNodeOrder" parameterType="long" resultType="int">
+      select Max(node_order) from t_engine_node where version_id =#{versionId}
+  </select>
+
+  <update id="updateNodeForNextOrderAndParams" parameterType="java.util.List">
+    <foreach collection="list" index="index" item="item" separator=";">
+      update t_engine_node set
+      <if test="item.nextNodes != null">
+        next_nodes = #{item.nextNodes},
+      </if>
+      <if test="item.params != null">
+        params = #{item.params},
+      </if>
+      <if test="item.nodeJson != null">
+        node_json = #{item.nodeJson},
+      </if>
+      parent_id = #{item.parentId }
+      where node_id = #{item.nodeId}
+    </foreach>
+  </update>
+
+  <select id="getEngineNodeListByVersionId" parameterType="long" resultMap="EngineNodeMap">
+    select <include refid="Base_Column_List"/> from t_engine_node where version_id =#{engineVersionId}
+    ORDER BY node_order ASC
+  </select>
+</mapper>
