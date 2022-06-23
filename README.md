@@ -14,7 +14,7 @@
  加官方微信号，进开源交流群。
                              
                              
-   ![|](image/WechatIMG513.jpeg)
+   ![|](https://www.fibo.cn/standard/image/git_weixin.jpg)
   
                                   
 ## EngineX整体功能架构介绍
@@ -104,7 +104,7 @@ SQL指标是通过编写SQL获取指标数据，在需要该指标数据，会�
 EngineX决策引擎系统核心概念有：指标、规则、决策节点、决策流、决策引擎。它们的组成关系如下： 
 
                        
-  ![|](https://github.com/FiboAI/EngineX/blob/master/image/relation.png)
+  ![|](https://www.fibo.cn/standard/image/relation.png)
   
   
         
