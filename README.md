@@ -14,7 +14,10 @@
                              
                              
    ![|](https://www.fibo.cn/standard/image/git_weixin.jpg)
+   
  扫描二维码，添加WhatsApp。
+ 
+ 
   ![|](https://www.fibo.cn/standard/image/whatsApp.jpg)
   
                                   
@@ -131,11 +134,11 @@ FIBO Rule决策引擎系统核心概念有：指标、规则、决策节点、�
 
 ### 6 部署参考文档
 
-![|](https://www.fibo.cn/docs/)
+https://www.fibo.cn/docs/
 
 ### 7 demo演示
 
-![|](http://ex.fibo.cn)
+http://ex.fibo.cn
 
 
 
